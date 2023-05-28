@@ -1,0 +1,63 @@
+
+##GET roster 
+GET http://localhost:8383/getroster
+Content-Type: application/json
+
+{
+ "date" : "5.26"
+
+}
+
+
+### GET Attendance 
+GET http://localhost:8383/attendance/5.25
+
+
+### ADD A STUDENT
+POST http://localhost:8383/addstudent
+Content-Type: application/json
+
+{
+
+    "date" : "5.27",
+    "name": "Grace",
+    "status": "present"
+}
+
+
+
+### GET FRIENDs
+GET http://localhost:8383/friends
+
+### GET FRIEND
+GET http://localhost:8383/dbfriends/tomato
+
+
+### ADD A FRIEND
+POST http://localhost:8383/addfriend
+Content-Type: application/json
+
+{
+    "name": "banana",
+    "status": "frieind"
+}
+
+### UPDATE STATUS OF A FRIEND
+PATCH http://localhost:8383/changestatus
+Content-Type: application/json
+
+{
+    "name": "tomato",
+    "newStatus": "friend"
+}
+
+
+###DELETE A FRIEND
+DELETE http://localhost:8383/friends
+Content-Type: application/json
+
+{
+    "name": "banana"
+}
+
+

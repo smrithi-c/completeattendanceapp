@@ -11,9 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/getroster', async (req, res) => {
+    const students = []
     const date  = req.query.date
+    const status  = req.query.status
     const peopleRef = db.collection('attendance').doc(date)
     const doc = await peopleRef.get()
+    
   
     if (!doc.exists) {
       return res.sendStatus(400)
@@ -21,9 +24,22 @@ app.get('/getroster', async (req, res) => {
   
     const data = doc.data()
     
+    for (let k in data) {
+      
+      if(data[k]["status"] == status){
+        students.push(k)
+      }
+
+ 
+
+     
+  }
   
-    res.status(200).send(data)
+    res.status(200).send(students)
   });
+
+
+ 
 
 
 
@@ -42,6 +58,28 @@ app.get('/getroster', async (req, res) => {
     res.status(200).send("successfully added")
 })
 
+app.get('/getstudent', async (req, res) => {
+    
+    const name = req.query.name
+    var dict = {};
+    const datesRef = db.collection('attendance');
+  const snapshot = await datesRef.orderBy(name).get();
+  if (snapshot.empty) {
+    res.status(200).send("We could not find " + name + " in our database")
+    return;
+  }
+
+snapshot.forEach(doc => {
+  var date = doc.id 
+  const data = doc.data()
+  dict[date] = data[name]["status"]
+});
+  
+res.status(200).send(dict)
+    
+  });
+
+
 
 
 
@@ -49,6 +87,19 @@ app.get('/getroster', async (req, res) => {
   app.get('/roster', (req, res) => {
     res.sendFile(path.join(__dirname, 'roster.html'));
   });
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  });
+
+  app.get('/student', (req, res) => {
+    res.sendFile(path.join(__dirname, 'student.html'));
+  });
+
+  app.get('/attendance', (req, res) => {
+    res.sendFile(path.join(__dirname, 'attendance.html'));
+  });
+
 
 
 

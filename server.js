@@ -79,7 +79,22 @@ res.status(200).send(dict)
     
   });
 
-
+  app.get('/data', (req, res) => {
+    db.collection("attendance")
+      .get()
+      .then(function(querySnapshot) {
+        var data = [];
+        querySnapshot.forEach(function(doc) {
+          data.push([doc.id,doc.data()]);
+        });
+        res.send(data);
+      })
+      .catch(function(error) {
+        console.log('Error getting Firestore data: ', error);
+        res.status(500).send('Error retrieving Firestore data');
+      });
+  });
+  
 
 
 
@@ -98,6 +113,10 @@ res.status(200).send(dict)
 
   app.get('/attendance', (req, res) => {
     res.sendFile(path.join(__dirname, 'attendance.html'));
+  });
+
+  app.get('/entries', (req, res) => {
+    res.sendFile(path.join(__dirname, 'entries.html'));
   });
 
 

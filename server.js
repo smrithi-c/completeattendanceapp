@@ -11,11 +11,21 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/getroster', async (req, res) => {
+
+
+  
+
     const students = []
     const date  = req.query.date
     const status  = req.query.status
-    const peopleRef = db.collection('attendance').doc(date)
-    const doc = await peopleRef.get()
+
+    if(date.trim()==""||status.trim()==""){
+      res.status(400).send("Invalid request- one or more inputs were empty");
+      return;
+    }
+
+    const dateRef = db.collection('attendance').doc(date)
+    const doc = await dateRef.get()
     
   
     if (!doc.exists) {
@@ -23,6 +33,7 @@ app.get('/getroster', async (req, res) => {
     }
   
     const data = doc.data()
+    console.log(data);
     
     for (let k in data) {
       
@@ -42,6 +53,7 @@ app.get('/getroster', async (req, res) => {
  
 
 
+  
 
   app.post('/addstudent', async (req, res) => {
     const name = req.body.name
@@ -49,13 +61,13 @@ app.get('/getroster', async (req, res) => {
     const status = req.body.status
     const dateRef = db.collection('attendance').doc(date)
     const res2 = await dateRef.set({
-        [name] : {
-        "status":status
-        }
+      [name] : {
+      "status":status
+      }
 
     }, { merge: true })
-    // friends[name] = status
     res.status(200).send("successfully added")
+    
 })
 
 app.get('/getstudent', async (req, res) => {
@@ -86,7 +98,9 @@ res.status(200).send(dict)
         var data = [];
         querySnapshot.forEach(function(doc) {
           data.push([doc.id,doc.data()]);
+          
         });
+        console.log(data);
         res.send(data);
       })
       .catch(function(error) {
@@ -118,6 +132,11 @@ res.status(200).send(dict)
   app.get('/entries', (req, res) => {
     res.sendFile(path.join(__dirname, 'entries.html'));
   });
+
+  app.get('/studententries', (req, res) => {
+    res.sendFile(path.join(__dirname, 'studententries.html'));
+  });
+
 
 
 
